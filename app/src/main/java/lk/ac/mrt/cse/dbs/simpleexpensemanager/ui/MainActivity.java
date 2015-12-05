@@ -27,8 +27,7 @@ import android.support.v7.widget.Toolbar;
 
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.R;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.ExpenseManager;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.InMemoryDemoExpenseManager;
-import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.NewExpenseManager;
+import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.PersistentExpenseManager;
 import lk.ac.mrt.cse.dbs.simpleexpensemanager.control.exception.ExpenseManagerException;
 
 public class MainActivity extends AppCompatActivity {
@@ -68,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         /***  Begin generating dummy data for In-Memory implementation  ***/
         try {
-            expenseManager = new NewExpenseManager(this);
+            expenseManager = new PersistentExpenseManager(this);
         } catch (ExpenseManagerException e) {
             e.printStackTrace();
         }

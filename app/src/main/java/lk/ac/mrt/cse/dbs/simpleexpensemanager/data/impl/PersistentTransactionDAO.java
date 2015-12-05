@@ -18,30 +18,29 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.Transaction;
 /**
  * Created by Jayan on 12/5/2015.
  */
-public class NewTransactionDAO implements TransactionDAO {
+public class PersistentTransactionDAO implements TransactionDAO {
     private Context context;
+    private DB_Helper db_helper;
 
-    public NewTransactionDAO(Context context)
+    public PersistentTransactionDAO(Context context)
     {
         this.context = context;
+        db_helper = DB_Helper.getInstance(context);
     }
 
 
 
     @Override
     public void logTransaction(Date date, String accountNo, ExpenseType expenseType, double amount) {
-        DB_Helper db_helper = DB_Helper.getInstance(context);
         SQLiteDatabase db = db_helper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(DB_Helper.ACCOUNT_NO,accountNo);
-        values.put(DB_Helper.DATE,dateToString(date, context));
-        values.put(DB_Helper.AMOUNT,amount);
         values.put(DB_Helper.EXPENSE_TYPE,expenseType.toString());
+        values.put(DB_Helper.AMOUNT,amount);
+        values.put(DB_Helper.DATE,dateToString(date, context));
 
         db.insert(DB_Helper.TABLE_NAME_TRANSACTION,null,values);
-
-
     }
 
     @Override
@@ -54,10 +53,8 @@ public class NewTransactionDAO implements TransactionDAO {
         return getPaginatedTransactionLogsImpl(String.valueOf(limit));
     }
 
-    private List<Transaction> getPaginatedTransactionLogsImpl(String limit)
-    {
-    DB_Helper db_helper = DB_Helper.getInstance(context);
-    SQLiteDatabase db = db_helper.getReadableDatabase();
+    private List<Transaction> getPaginatedTransactionLogsImpl(String limit) {
+        SQLiteDatabase db = db_helper.getReadableDatabase();
 
     String[] projection = {
             DB_Helper.ACCOUNT_NO,
@@ -80,26 +77,20 @@ public class NewTransactionDAO implements TransactionDAO {
             String dateString =c.getString(c.getColumnIndex(DB_Helper.DATE));
             Date date = dateFromString(dateString);
             Transaction tr = new Transaction(date,
-                    c.getString(c.getColumnIndex(DB_Helper.ACCOUNT_NO)),
-                    expenseType,
+                    c.getString(c.getColumnIndex(DB_Helper.ACCOUNT_NO)),expenseType,
                     c.getFloat(c.getColumnIndex(DB_Helper.AMOUNT)));
             results.add(tr);
-        } catch (ParseException e) {
-            //we will skill erroneous records in database
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
     return results;
 }
 
     private static String dateToString(Date date, Context context){
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = dateFormat.format(date);
         return dateString;
-
     }
 
     private static Date dateFromString(String date) throws ParseException {

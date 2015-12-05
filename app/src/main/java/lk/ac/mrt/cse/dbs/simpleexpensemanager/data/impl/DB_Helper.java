@@ -20,7 +20,7 @@ public class DB_Helper  extends SQLiteOpenHelper {
     public static final String ACCOUNT_HOLDER_NAME = "account_holder_name";
     public static final String BALANCE = "balance";
 
-    public static final String TABLE_NAME_TRANSACTION = "transaction_history";
+    public static final String TABLE_NAME_TRANSACTION = "transactions";
     public static final String ENTRY_INDEX = "record_number";
     public static final String EXPENSE_TYPE = "expense_type";
     public static final String DATE = "date";
